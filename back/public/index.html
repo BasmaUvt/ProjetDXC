@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Messagerie interne DXC </title>
+  <style>
+    /* Ajoutez vos styles CSS ici */
+  </style>
+</head>
+<body>
+  <h1>Messagerie interne DXC </h1>
+  <h2 id="welcome"></h2>
+
+  <div id="messages"></div>
+  <form id="message-form">
+    <input type="text" id="message" autocomplete="off" required>
+    <button type="submit">Envoyer</button>
+  </form>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    // Ajoutez le code suivant au début de la balise <script>
+    fetch("/username")
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error("Non authentifié");
+        }
+      })
+      .then((data) => {
+        document.getElementById("welcome").textContent = `Bienvenue, ${data.username}`;
+      })
+      .catch((error) => {
+        console.error("Erreur:", error);
+      });
+
+    // Reste du code JavaScript
+    const socket = io();
+
+    const messageForm = document.getElementById("message-form");
+    const messageInput = document.getElementById("message");
+    const messages = document.getElementById("messages");
+
+    messageForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (messageInput.value) {
+        socket.emit("chat message", messageInput.value);
+        messageInput.value = "";
+      }
+    });
+
+    socket.on("chat message", (msg) => {
+      const messageElement = document.createElement("div");
+      messageElement.textContent = msg;
+      messages.appendChild(messageElement);
+      window.scrollTo(0, document.body.scrollHeight);
+    });
+  </script>
+</body>
+</html>
