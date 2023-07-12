@@ -1,0 +1,10 @@
+/* .css */
+body {
+  background-color: #89CFF0; /* Couleur de fond bleu clair */
+}
+
+.form-container {
+  background-color: #FFD700; /* Couleur de fond jaune pour le formulaire */
+  padding: 20px;
+  border-radius: 5px;
+}
