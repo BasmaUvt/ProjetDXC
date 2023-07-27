@@ -5,7 +5,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Récupérer le code source depuis le dépôt Git
-                //git url: 'https://github.dxc.com/brakrouki2/messagerie-interne.git', branch: env.BRANCH_NAME
+                //git url: 'https://github.com/BasmaUvt/ExtensionMessagerieDXC.git', branch: env.main
                 checkout scm
             }
         }

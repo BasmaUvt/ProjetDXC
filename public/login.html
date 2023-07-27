@@ -3,26 +3,42 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Se connecter</title>
+  <title>Extension de chat DXC</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="login.css">
 </head>
 <body>
+  <nav class="navbar navbar-light" style="background-color: #c212c2;">
+  <a class="navbar-brand" href="#">
+        <img src="logo.png" alt="Logo" width="30" height="24">
+        DXC Technology
+      </a></nav>
   <div class="container">
     <div class="row justify-content-center">
+      
       <div class="col-md-6">
-        <h1 class="text-center my-4">Se connecter</h1>
+        <h1 class="text-center my-4">Chatting</h1>
         <div class="form-container">
           <form action="/login" method="post">
             <div class="mb-3">
-              <label for="username" class="form-label">Nom d'utilisateur:</label>
+              <label for="company" class="form-label">Company</label>
+              <select class="form-select" id="company" name="company">
+                <option selected>Choose...</option>
+                <option value="country1">Tunisia</option>
+                <option value="country2">Milan</option>
+                <option value="country3">France</option>
+                <option value="country3">India</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="username" class="form-label">ID</label>
               <input type="text" id="username" name="username" class="form-control" required>
             </div>
             <div class="mb-3">
-              <label for="password" class="form-label">Mot de passe:</label>
+              <label for="password" class="form-label">Password</label>
               <input type="password" id="password" name="password" class="form-control" required>
             </div>
-            <button type="submit" class="btn btn-primary">Se connecter</button>
+            <button type="submit" class="btn btn-primary">Connect</button>
           </form>
         </div>
       </div>

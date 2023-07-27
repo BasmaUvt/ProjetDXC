@@ -1,10 +1,24 @@
-/* .css */
-body {
-  background-color: #89CFF0; /* Couleur de fond bleu clair */
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 }
 
+.btn-primary {
+  background-color: violet;
+  border-color: violet;
+}
+
+.form-select {
+  width: 100%;
+  margin-bottom: 1rem;
+}
 .form-container {
-  background-color: #FFD700; /* Couleur de fond jaune pour le formulaire */
-  padding: 20px;
-  border-radius: 5px;
+  max-height: 400px;
+  overflow-y: auto;
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: #d9d9d9;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
 }

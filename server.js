@@ -11,7 +11,6 @@ const server = http.createServer(app);
 const io = socketIO(server);
 const PORT = process.env.PORT || 3000;
 
-// Connexion à MongoDB
 const uri = "mongodb://127.0.0.1:27017/ma_base_de_donnees";
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
@@ -21,16 +20,13 @@ db.once("open", () => {
 console.log("Connecté à MongoDB");
 });
 
-// Schéma et modèle d'utilisateur
 const userSchema = new mongoose.Schema({
 ID: String,
 password: String,
-// Autres champs si nécessaire...
 });
 const messageSchema = new mongoose.Schema({
   user: String,
   content: String,
-  // Autres champs si nécessaire...
   });
 //const User = mongoose.model("User", userSchema);
 const User = mongoose.model("User", userSchema, "utilisateurs");
@@ -55,19 +51,15 @@ app.post("/login", async (req, res) => {
 
     // Recherchez l'utilisateur dans la base de données en utilisant le champ 'ID'
     const user = await User.findOne({ ID: username });
-
-    // Vérifiez si l'utilisateur existe et si le mot de passe correspond
     if (user && user.password === password) {
-    // Authentification réussie, effectuez les actions nécessaires
     req.session.username = user;
     res.redirect("/");
     } else {
-    // Échec de l'authentification, renvoyez une réponse appropriée
     res.status(401).send("Échec de l'authentification");
     }
 });
 
-// Middleware pour gérer les redirections
+// gérer les redirections
 app.use((req, res, next) => {
 if (req.originalUrl === "/login" || req.originalUrl === "/login.html") {
 return next();
@@ -110,35 +102,26 @@ app.get("/chat", ensureAuthenticated, (req, res) => {
 res.sendFile(__dirname + "/public/index.html");
 });
 
-// Servir les fichiers statiques du dossier 'public'
 app.use(express.static(path.join(__dirname, "public")));
 
 // Gestion des connexions socket.io
 io.on("connection", (socket) => {
   console.log("User connected");
-  // Écoutez les messages de chat émis par les clients
   socket.on("chat message", async(msg) => {
         console.log("Message reçu:", msg);
         try {
-        // Créez un nouveau message et 
-        const newMessage = new Message({ user: "115", content: msg });
-        await newMessage.save();
-         
-        // Envoyez le message aux autres clients  
-        io.emit("chat message", { user: "115", content: msg });
+        const newMessage = new Message({ user: "basma", content: msg });
+        await newMessage.save(); 
+        io.emit("chat message", { user: "basma", content: msg });
         } catch (error) {
         console.error("Error saving message to database:", error);
         }
-        //});
-        // Diffusez le message à tous les clients connectés
         io.emit("chat message", msg);
   });
   socket.on("disconnect", () => {
   console.log("User disconnected");
   });
 });
-
-// Gérer les autres événements de socket.io ici
 
 // Démarrage du serveur
 server.listen(PORT, () => {
