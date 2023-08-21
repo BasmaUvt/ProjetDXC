@@ -1,41 +1,39 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chat with DXC</title>
+  <title>Chat avec DXC</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="index.css">
 </head>
 <body>
-  <nav class="navbar navbar-light" style="background-color: #c212c2;"> <!-- Changer la couleur de fond selon votre choix -->
+  <nav class="navbar navbar-light" style="background-color: #6024A0;">
     <div class="container-fluid">
       <a class="navbar-brand" href="#">
         <img src="logo.png" alt="Logo" width="30" height="24">
         DXC Technology
       </a>
-      <button id="logoutButton" class="btn btn-danger" onclick="handleLogout()" color="#d9d9d9">Logout</button>
+      <button id="logoutButton" class="btn btn-danger" onclick="handleLogout()" style="color:#d9d9d9;">Logout</button>
     </div>
   </nav>
 
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-md-6">
-        <h1 class="text-center my-4">Chat with DXC</h1>
+        <h1 class="text-center my-4">Chat avec DXC</h1>
         <h2 id="welcome" class="text-center"></h2>
 
         <div class="form-container">
           <div id="messages"></div>
-          <form id="message-form">
-
+          <form id="message-form" onsubmit="event.preventDefault(); handleSendMessage();">
             <div class="mb-3">
-              <label for="recipient" class="form-label">send to</label>
+              <label for="recipient" class="form-label">Send to</label>
               <select id="recipient" class="form-select mb-3">
-                <!-- Ajoutez ici les options de la liste déroulante. -->
                 <option selected>Choose...</option>
-                <option>besma.rakrouki2@dxc.com</option>
-                <option>mehdi2@dxc.com</option>
-                <option>hela2@dxc.com</option>
+                <option value="besma.rakrouki2@dxc.com">besma.rakrouki2@dxc.com</option>
+                <option value="mehdi2@dxc.com">mehdi2@dxc.com</option>
+                <option value="hela2@dxc.com">hela2@dxc.com</option>
               </select>
 
               <label for="message" class="form-label">Message</label>
@@ -51,6 +49,9 @@
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
+    let username = "";
+
+    // Récupération du nom de l'utilisateur connecté
     fetch("/username")
       .then((response) => {
         if (response.ok) {
@@ -60,7 +61,8 @@
         }
       })
       .then((data) => {
-        document.getElementById("welcome").textContent = `Bienvenue, ${data.username}`;
+        username = data.username;
+        document.getElementById("welcome").textContent = `Welcome, ${username}`;
       })
       .catch((error) => {
         console.error("Erreur:", error);
@@ -89,24 +91,23 @@
     const messageForm = document.getElementById("message-form");
     const messageInput = document.getElementById("message");
     const messages = document.getElementById("messages");
+    const recipient = document.getElementById("recipient");
 
     function handleSendMessage() {
-      if (messageInput.value) {
-        socket.emit("chat message", messageInput.value);
+      if (messageInput.value && recipient.value !== 'Choose...') {
+        socket.emit("chat message", { message: messageInput.value, user: username });
         messageInput.value = "";
+      } else if (recipient.value === 'Choose...') {
+        alert('Veuillez sélectionner un destinataire.');
       }
     }
 
-    messageForm.addEventListener("submit", (event) => {
-      event.preventDefault();
-      handleSendMessage();
-    });
-
     socket.on("chat message", (msg) => {
+      console.log(msg);
       const messageElement = document.createElement("div");
       messageElement.classList.add("message");
-      
-      messageElement.textContent = msg;
+  
+      messageElement.textContent = `${msg.user}: ${msg.content}`;
       messages.appendChild(messageElement);
       const lineBreak = document.createElement("br");
       messages.appendChild(lineBreak);

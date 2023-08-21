@@ -40,6 +40,6 @@ body {
     border-color: grey !important; /* Si vous voulez changer la couleur de la bordure aussi */
 }
 .btn.btn-primary {
-  background-color: rgb(210, 85, 183) !important;
-  border-color: rgb(210, 85, 183) !important;
+  background-color: rgb(158, 15, 158) !important;
+  border-color: rgb(158, 15, 158) !important;
 }
