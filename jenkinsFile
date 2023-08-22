@@ -5,8 +5,8 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Récupérer le code source depuis le dépôt Git
-                git url: 'https://github.com/BasmaUvt/ProjetDXC.git', branch: env.master
-                checkout scm
+                git url: 'https://github.com/BasmaUvt/ProjetDXC.git', branch: 'master'
+                
             }
         }
 
