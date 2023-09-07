@@ -25,21 +25,21 @@
         <h2 id="welcome" class="text-center"></h2>
 
         <div class="form-container">
-          <div class="mb-3">
-            <label for="recipient" class="form-label">Send to</label>
-            <select id="recipient" class="form-select mb-3">
-              <option value="" selected disabled hidden>Choose an email address</option>
-              <!-- Les options seront ajoutées ici par Javascript -->
-            </select>
+                      <div class="mb-3">
+              <label for="recipient" class="form-label">Send to</label>
+              <select id="recipient" class="form-select mb-3">
+                <option value="" selected disabled hidden>Choose an email address</option>
+                <!-- Les options seront ajoutées ici par Javascript -->
+              </select>
 
-            <label for="message" class="form-label">Message</label>
-            <input type="text" id="message" autocomplete="off" required class="form-control">
-          </div>
+              <label for="message" class="form-label">Message</label>
+              <input type="text" id="message" autocomplete="off" required class="form-control">
+            </div>
           <div id="messages"></div>
           <form id="message-form" onsubmit="event.preventDefault(); handleSendMessage();">
 
 
-            <button type="submit" class="btn btn-primary">Send</button>
+            <button id="send" type="submit" class="btn btn-primary">Send</button>
           </form>
         </div>
       </div>

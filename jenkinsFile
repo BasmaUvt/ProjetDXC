@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // Récupérer le code source depuis le dépôt Git
+                
                 git url: 'https://github.com/BasmaUvt/ProjetDXC.git', branch: 'master'
                 
             }
@@ -12,7 +12,7 @@ pipeline {
 
         stage('Install') {
             steps {
-                // Installer les dépendances du projet
+               
                 bat 'npm install'
             }
         }
@@ -42,30 +42,5 @@ pipeline {
         }
     }
 
-        //stage('Deploy') {
-          //  when {
-            //    anyOf {
-                 //   branch 'master'
-                 //   branch 'dev'
-                  //  branch 'test'
-               // }
-          //  }
-          //  steps {
-                // Déployer  l'application en fonction de la branche
-               
-            //    script {
-             //       if (env.BRANCH_NAME == 'master') {
-             //           // Déployer sur l'environnement de production
-              //          echo "Deploying to production environment"
-              //      } else if (env.BRANCH_NAME == 'dev') {
-                        // Déployer sur l'environnement de développement
-               //         echo "Deploying to development environment"
-               //     } else if (env.BRANCH_NAME == 'test') {
-                        // Déployer sur l'environnement de test
-               //         echo "Deploying to testing environment"
-               //     }
-               // }
-         //   }
-      //  }
     }
 }
