@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Admin Page</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="index.css">
+        <link rel="stylesheet" href="admin.css">
+    </head>
+    <body>
+        <nav class="navbar navbar-light" style="background-color: #6024A0;">
+            <div class="container-fluid">
+              <a class="navbar-brand" href="#">
+                <img src="logo.png" alt="Logo" width="30" height="24" >
+                DXC Technology
+              </a>
+              <button id="logoutButton" class="btn btn-danger" onclick="handleLogout()" style="color:#d9d9d9;">Logout</button>
+            </div>
+          </nav>
+        <h1>Admin Session</h1>
+
+        <h2>Actions</h2>
+        <button onclick="window.location.href='users.html'">Users</button>
+        <button onclick="window.location.href='conversations.html'">Conversations</button>
+
+        <h2>Add User</h2>
+        <form id="add-user-form">
+          <input type="text" id="new-user-id" placeholder="ID">
+          <input type="text" id="new-user-email" placeholder="Email">
+          <input type="password" id="new-user-password" placeholder="Password">
+          <select id="new-user-role">
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+          </select>
+          <button type="submit">Add User</button>
+      </form>
+
+        <h2>Edit User</h2>
+        <form id="edit-user-form">
+          <input type="text" id="edit-user-id" placeholder="ID">
+          <input type="text" id="edit-user-email" placeholder="Email">
+          <input type="password" id="edit-user-password" placeholder="New Password">
+          <select id="edit-user-role">
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+          </select>
+          <button type="submit">Edit User</button>
+      </form>
+
+        <h2>Delete User</h2>
+        <form id="delete-user-form">
+          <input type="text" id="delete-user-id" placeholder="ID">
+          <button type="submit">Delete User</button>
+      </form>
+
+        <div class="container">
+            <div class="row justify-content-center">
+              <div class="col-md-6">
+                <h1 class="text-center my-4">Chat avec DXC</h1>
+                <h2 id="welcome" class="text-center"></h2>
+
+                <div class="form-container">
+                    <!-- <div class="mb-3"> -->
+                        <label for="recipient" class="form-label">Send to</label>
+                        <select  id="recipient" class="form-select mb-3">
+                          <option value="" selected disabled hidden>Choose an email address</option>
+                        </select>
+          
+                        <label for="message" class="form-label">Message</label>
+                        <input type="text" id="message" autocomplete="off" required class="form-control">
+                      <!--</div>-->
+                  <div id="messages"></div>
+                  <form id="message-form" onsubmit="event.preventDefault(); handleSendMessage();">
+
+        
+                    <button type="submit" class="btn btn-primary">Send</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <div id="userInfo"></div>
+          </div>
+
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+                        // Ajouter un utilisateur
+                        $('#add-user-form').on('submit', function(e) {
+                e.preventDefault();
+                const id = $('#new-user-id').val();
+                const email = $('#new-user-email').val();
+                const password = $('#new-user-password').val();
+                const role = $('#new-user-role').val();
+                $.post('/users', { ID: id, email: email, password: password, role: role })
+                .done(function() {
+                    location.reload(); // recharge la page pour voir le nouvel utilisateur
+                })
+                .fail(function(err) {
+                    console.error(err);
+                });
+            });
+
+            // Modifier un utilisateur
+            $('#edit-user-form').on('submit', function(e) {
+                e.preventDefault();
+                const id = $('#edit-user-id').val();
+                const email = $('#edit-user-email').val();
+                const password = $('#edit-user-password').val();
+                const role = $('#edit-user-role').val();
+                $.ajax({
+                    url: '/users/' + id,
+                    method: 'PUT',
+                    data: { email: email, password: password, role: role }
+                })
+                .done(function() {
+                    location.reload(); // recharge la page pour voir les modifications
+                })
+                .fail(function(err) {
+                    console.error(err);
+                });
+            });
+//suppression
+
+            $('#delete-user-form').on('submit', function(e) {
+                e.preventDefault();
+                const id = $('#delete-user-id').val();
+                $.ajax({
+                    url: '/users/' + id,
+                    method: 'DELETE'
+                })
+                .done(function() {
+                    location.reload(); // recharge la page pour voir les modifications
+                })
+                .fail(function(err) {
+                    console.error(err);
+                });
+            });
+
+            let username = "";
+    let userId = ""; // Ajoutez une variable pour stocker l'ID de l'utilisateur
+  
+    // Récupération du nom de l'utilisateur connecté et de son ID
+      fetch("/username")
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error("Non authentifié");
+        }
+      })
+      .then((data) => {
+        username = data.username;
+        userId = data.userId;
+        document.getElementById("welcome").textContent = `Welcome, ${username}`;
+        populateRecipientSelect(); // Ajout de cette ligne
+      })
+      .catch((error) => {
+        console.error("Erreur:", error);
+      });
+
+      const socket = io();
+    const messageForm = document.getElementById("message-form");
+    const messageInput = document.getElementById("message");
+    const messages = document.getElementById("messages");
+    const recipient = document.getElementById("recipient");
+
+    async function populateRecipientSelect() {
+      try {
+        const response = await fetch('/all-users');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const users = await response.json();
+        users.forEach(user => {
+          if (user.userId !== userId) {
+            const option = document.createElement('option');
+            option.value = user.userId;
+            option.text = user.email;
+            recipient.add(option);
+          }
+        });
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
+
+    function handleSendMessage() {
+      if (messageInput.value && recipient.value) {
+        const timestamp = new Date();
+        socket.emit("chat message", { 
+          content: messageInput.value, 
+          user: userId, 
+          recipient: recipient.value,
+          date: timestamp.toISOString()
+        });
+        messageInput.value = "";
+      } else {
+        alert('Veuillez sélectionner un destinataire et écrire un message.');
+      }
+    }
+
+    socket.on("chat message", (msg) => {
+      const messageElement = document.createElement("div");
+      messageElement.classList.add("message");
+
+      const date = new Date(msg.date); // transformer la chaîne ISO en date
+
+      const options = { year:'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+
+      if (msg.user === username) {
+        messageElement.innerHTML = `
+          <div class="sent">
+            <p class="meta">${msg.user} <span>${date.toLocaleDateString('fr-FR', options)}</span></p>
+            <p class="text">${msg.content}</p>
+          </div>
+        `;
+      } else {
+        messageElement.innerHTML = `
+          <div class="received">
+            <p class="meta">${msg.user} <span>${date.toLocaleDateString('fr-FR', options)}</span></p>
+            <p class="text">${msg.content}</p>
+          </div>
+        `;
+      }
+      
+      messages.appendChild(messageElement);
+      messages.scrollTop = messages.scrollHeight;
+    });
+
+    function handleLogout() {
+    // Supprimer les informations d'utilisateur du localStorage (si elles y sont stockées)
+    localStorage.removeItem('user');
+
+    // Déconnecter l'utilisateur sur le serveur (si nécessaire)
+    fetch('/logout', { method: 'POST' })
+    .then(() => {
+        // Rediriger l'utilisateur vers la page de connexion
+        window.location.href = '/login.html';
+    })
+    .catch((error) => {
+        console.error('Erreur lors de la déconnexion:', error);
+    });
+}
+  </script>
+</body>
+</html>

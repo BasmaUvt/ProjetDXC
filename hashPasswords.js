@@ -8,25 +8,44 @@ const db = mongoose.connection;
 db.on("error", console.error.bind(console, "Erreur de connexion à MongoDB:"));
 db.once("open", () => {
   console.log("Connecté à MongoDB");
+  hashPasswords();  // Appelez la fonction hashPasswords une fois que la connexion est établie
 });
 
-const userSchema = new mongoose.Schema({
-  ID: String,
-  password: String,
+const UserSchema = new mongoose.Schema({
+  ID: {
+    type: String,
+    required: true
+},
+email: {
+    type: String,
+    required: true,
+    unique: true
+},
+password: {
+    type: String,
+    required: true
+},
+role: {
+    type: String,
+    enum: ['user', 'admin'],  // le champ "role" peut être soit 'user' soit 'admin'
+    default: 'user'   // par défaut, le champ "role" est 'user'
+}
 });
-const User = mongoose.model("User", userSchema, "utilisateurs");
+const User = mongoose.model("User", UserSchema, "users");
 
-// Supposez que vous avez une liste d'utilisateurs avec des mots de passe en clair
-const users = [
-  { ID: 'basma', password: '123' },
-  { ID: 'mariem', password: '123' },
-  { ID: 'nesrine', password: '123' },
-];
+async function hashPasswords() {
+  // Récupère tous les utilisateurs
+  const users = await User.find({});
 
-// Hachez chaque mot de passe et mettez à jour l'utilisateur correspondant dans la base de données
-users.forEach(async (user) => {
-  const salt = bcrypt.genSaltSync(10);
-  const hashedPassword = bcrypt.hashSync(user.password, salt);
+  for (const user of users) {
+    // Si le mot de passe n'a pas encore été haché
+    if (!user.password.startsWith('$2a$')) {
+      const salt = bcrypt.genSaltSync(10);
+      const hashedPassword = bcrypt.hashSync(user.password, salt);
+      user.password = hashedPassword;
+      await user.save();
+    }
+  }
 
-  await User.updateOne({ ID: user.ID }, { $set: { password: hashedPassword } });
-});
+  console.log('Password hashing complete');
+}

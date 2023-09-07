@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Conversations</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body>
+    <nav class="navbar navbar-light" style="background-color: #6024A0;">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+          <img src="logo.png" alt="Logo" width="30" height="24" >
+          DXC Technology
+        </a>
+        <button id="logoutButton" class="btn btn-danger" onclick="handleLogout()" style="color:#d9d9d9;">Logout</button>
+      </div>
+    </nav>
+    <h1>Conversations</h1>
+    <table id="conversations" class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Participants</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Les détails des conversations seront ajoutés ici par jQuery -->
+      </tbody>
+    </table>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+      $(document).ready(function() {
+        $.get('/conversations', function(data) {
+          data.forEach(function(conversation) {
+            var participants = conversation.participants.join(', ');
+            var row = '<tr><td>' + conversation._id + '</td><td>' + participants + '</td></tr>';
+            $('#conversations tbody').append(row);
+          });
+        });
+      });
+
+      function handleLogout() {
+    // Supprimer les informations d'utilisateur du localStorage (si elles y sont stockées)
+    localStorage.removeItem('user');
+
+    // Déconnecter l'utilisateur sur le serveur (si nécessaire)
+    fetch('/logout', { method: 'POST' })
+    .then(() => {
+        // Rediriger l'utilisateur vers la page de connexion
+        window.location.href = '/login.html';
+    })
+    .catch((error) => {
+        console.error('Erreur lors de la déconnexion:', error);
+    });
+}
+    </script>
+  </body>
+</html>
