@@ -39,4 +39,14 @@ pipeline {
             )
         }
     }
+    post {
+    success {
+        emailext (
+            subject: "Le job '${env.JOB_NAME}' a réussi",
+            body: "L'URL du job est : ${env.BUILD_URL}",
+            recipientProviders: [[$class: 'DevelopersRecipientProvider']],
+            to: 'besma.rakrouki2@dxc.com'
+        )
+    }
+}
 }
