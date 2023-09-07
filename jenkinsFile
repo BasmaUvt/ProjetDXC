@@ -4,34 +4,32 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                
                 git url: 'https://github.com/BasmaUvt/ProjetDXC.git', branch: 'master'
-                
             }
         }
 
         stage('Install') {
             steps {
-               
                 bat 'npm install'
             }
         }
 
-       // stage('Build') {
-           // steps {
+        /*
+        stage('Build') {
+            steps {
                 // Exécuter les scripts de build 
-                
-           // }
-       // }
+            }
+        }
+        */
 
         stage('Test') {
             steps {
-                // Exécuter les tests de votre projet
-                
                 bat 'npm test'
             }
         }
-         post {
+    }
+
+    post {
         failure {
             emailext (
                 subject: "Le job '${env.JOB_NAME}' a échoué",
@@ -40,7 +38,5 @@ pipeline {
                 to: 'besma.rakrouki2@dxc.com'
             )
         }
-    }
-
     }
 }
