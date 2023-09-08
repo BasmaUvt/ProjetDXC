@@ -29,16 +29,16 @@ pipeline {
         }
     }
 
-    post {
-        failure {
-            emailext (
-                subject: "Le job '${env.JOB_NAME}' a échoué",
-                body: "L'URL du job est : ${env.BUILD_URL}",
-                recipientProviders: [[$class: 'DevelopersRecipientProvider']],
-                to: 'besma.rakrouki2@dxc.com'
-            )
-        }
+post {
+    failure {
+        emailext (
+            subject: "Test",
+            body: "Test",
+            to: 'besma.rakrouki2@dxc.com'
+        )
     }
+}
+    
     post {
     success {
         emailext (
