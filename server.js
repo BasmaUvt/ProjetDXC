@@ -11,7 +11,7 @@ const server = http.createServer(app);
 const io = socketIO(server);
 const PORT = process.env.PORT || 3000;
 
-const uri = 'mongodb://127.0.0.1:27017/ma_base_de_donnees';
+const uri = 'mongodb://192.168.1.165:27017/ma_base_de_donnees';
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true});
 
 const db = mongoose.connection;
@@ -23,8 +23,6 @@ console.log('Connecté à MongoDB');
 //const express = require('express');
 const User = require('./models/user');
 const Conversation = require('./models/Conversation');
-
-
 
 // Middleware
 app.use(express.json());
@@ -45,7 +43,7 @@ app.post('/login', async (req, res) => {
   const userRecord = await User.findOne({ ID: username });
   if (userRecord && bcrypt.compareSync(password, userRecord.password)) {
     req.session.userId = userRecord.ID;
-    req.session.role = userRecord.role; // ajoutez cette ligne
+    req.session.role = userRecord.role; 
     res.redirect('/');
   } else {
     res.status(401).send('Échec de l\'authentification');
@@ -84,9 +82,9 @@ app.get('/username', async (req, res) => {
     const user = await User.findOne({ ID: req.session.userId });
     if (user) {
       res.json({ 
-        username: user.ID, // renvoie l'ID de l'utilisateur
-        userId: user.ID, // renvoie également l'ID de l'utilisateur 
-        email: user.email // renvoie l'email de l'utilisateur
+        username: user.ID, 
+        userId: user.ID,  
+        email: user.email 
       });
     } else {
       res.status(404).send('User not found');
@@ -99,13 +97,8 @@ app.get('/username', async (req, res) => {
 // Route pour obtenir tous les utilisateurs
 app.get('/all-users', async (req, res) => {
   const users = await User.find({});
-  // En supposant que chaque utilisateur a une propriété 'email'
   res.json(users.map(user => ({ email: user.email, userId: user.ID })));
 }); 
-
-//app.get('/', (req, res) => {
-//res.sendFile(path.join(__dirname, 'public', 'index.html'));
-//});
 
 app.get('/login', (req, res) => {
 if (req.session.userId) {
@@ -158,8 +151,13 @@ app.put('/users/:id', async (req, res) => {
     return res.status(403).send('Access denied');
   }
 
-  const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
-  res.send(user);
+  try {
+    const user = await User.findOneAndUpdate({ ID: req.params.id }, req.body, { new: true });
+    res.send(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('An error occurred');
+  }
 });
 
 // Supprimer un utilisateur
@@ -168,7 +166,7 @@ app.delete('/users/:id', async (req, res) => {
     return res.status(403).send('Access denied');
   }
 
-  const user = await User.findByIdAndRemove(req.params.id);
+  const user = await User.findOneAndRemove(req.params.id);
   res.send(user);
 });
 io.on('connection', (socket) => {

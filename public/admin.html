@@ -23,7 +23,7 @@
         <h2>Actions</h2>
         <button onclick="window.location.href='users.html'">Users</button>
         <button onclick="window.location.href='conversations.html'">Conversations</button>
-
+        <div class="form-container admin">
         <h2>Add User</h2>
         <form id="add-user-form">
           <input type="text" id="new-user-id" placeholder="ID">
@@ -53,7 +53,7 @@
           <input type="text" id="delete-user-id" placeholder="ID">
           <button type="submit">Delete User</button>
       </form>
-
+</div>
         <div class="container">
             <div class="row justify-content-center">
               <div class="col-md-6">
@@ -61,7 +61,7 @@
                 <h2 id="welcome" class="text-center"></h2>
 
                 <div class="form-container">
-                    <!-- <div class="mb-3"> -->
+                    <div class="mb-3"> 
                         <label for="recipient" class="form-label">Send to</label>
                         <select  id="recipient" class="form-select mb-3">
                           <option value="" selected disabled hidden>Choose an email address</option>
@@ -69,13 +69,15 @@
           
                         <label for="message" class="form-label">Message</label>
                         <input type="text" id="message" autocomplete="off" required class="form-control">
-                      <!--</div>-->
-                  <div id="messages"></div>
-                  <form id="message-form" onsubmit="event.preventDefault(); handleSendMessage();">
-
-        
-                    <button type="submit" class="btn btn-primary">Send</button>
-                  </form>
+                    </div>
+                    <div id="messages"></div>
+                    <form id="message-form" onsubmit="event.preventDefault(); handleSendMessage();">
+          
+          
+                      <button id="send" type="submit" class="btn btn-primary">Send</button>
+                    </form>
+                  </div>
+                 
                 </div>
               </div>
             </div>
