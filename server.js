@@ -179,19 +179,17 @@ io.on('connection', (socket) => {
         console.error("User not found");
         return;
       }
-      // Vérifiez si l'ID de l'utilisateur ou le destinataire est null
+      
       if (!user.ID || !msg.recipient) {
-        // handle error
-        console.error("User ID or recipient is null");
+       console.error("User ID or recipient is null");
         return;
       }
       
-      // Préparez l'objet de mise à jour pour la conversation
       const update = {
         $push: {
           messages: {
             sender: user.ID, 
-            recipient: msg.recipient, // ajoutez cette ligne
+            recipient: msg.recipient, 
             content: msg.content,
             date: new Date().toISOString()
           }
@@ -202,8 +200,6 @@ io.on('connection', (socket) => {
       };
       
       const options = { upsert: true, new: true, setDefaultsOnInsert: true };
-      
-      // Mettez à jour ou créez une nouvelle conversation
       const conversation = await Conversation.findOneAndUpdate(
         { participants: { $size: 2, $in: [User.ID, msg.recipient] } }, 
         update, 

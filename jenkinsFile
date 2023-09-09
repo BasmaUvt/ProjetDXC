@@ -14,39 +14,35 @@ pipeline {
             }
         }
 
-        /*
-        stage('Build') {
-            steps {
-                // Exécuter les scripts de build 
-            }
-        }
-        */
-
         stage('Test') {
             steps {
                 bat 'npm test'
             }
         }
+
+        stage('Run') {
+            steps {
+                bat 'start /b cmd /c "node server.js"'
+            }
+        }
     }
 
-post {
-    failure {
-        emailext (
-            subject: "Test",
-            body: "Test",
-            to: 'besma.rakrouki2@dxc.com'
-        )
-    }
-}
-    
     post {
-    success {
-        emailext (
-            subject: "Le job '${env.JOB_NAME}' a réussi",
-            body: "L'URL du job est : ${env.BUILD_URL}",
-            recipientProviders: [[$class: 'DevelopersRecipientProvider']],
-            to: 'besma.rakrouki2@dxc.com'
-        )
+        failure {
+            emailext (
+                subject: "Échec du job '${env.JOB_NAME}'",
+                body: "L'URL du job est : ${env.BUILD_URL}",
+                to: 'besma.rakrouki2@dxc.com'
+            )
+        }
+
+        success {
+            emailext (
+                subject: "Le job '${env.JOB_NAME}' a réussi",
+                body: "L'URL du job est : ${env.BUILD_URL}",
+                recipientProviders: [[$class: 'DevelopersRecipientProvider']],
+                to: 'besma.rakrouki2@dxc.com'
+            )
+        }
     }
-}
 }
