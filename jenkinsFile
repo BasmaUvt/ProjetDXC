@@ -44,5 +44,14 @@ pipeline {
                 to: 'besma.rakrouki2@dxc.com'
             )
         }
+                stage('Docker Build') {
+            steps {
+                bat 'docker build -t applicationchat .'
+            }
+        }
+        stage('Docker Run Locally') {
+            steps {
+                bat 'docker run -p 3000:3000 applicationchat'
+            }
     }
 }
