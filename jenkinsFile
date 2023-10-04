@@ -32,12 +32,13 @@ pipeline {
                 bat 'docker-compose up -d'
             }
         }
-    }
-            stage('Test') {
+             stage('Test') {
             steps {
                 bat 'npm test'
             }
         }
+    }
+       
 
 post {
     failure {
