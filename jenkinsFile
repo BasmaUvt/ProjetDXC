@@ -14,11 +14,6 @@ pipeline {
             }
         }
 
-        stage('Test') {
-            steps {
-                bat 'npm test'
-            }
-        }
 
 //        stage('Run') {
 //            steps {
@@ -38,6 +33,11 @@ pipeline {
             }
         }
     }
+            stage('Test') {
+            steps {
+                bat 'npm test'
+            }
+        }
 
 post {
     failure {
