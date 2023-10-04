@@ -21,11 +21,11 @@ pipeline {
 //            }
 //        }
 
-        stage('Docker Build') {
-            steps {
-                bat 'docker build -t applicationchat .'
-            }
-        }
+//        stage('Docker Build') {
+//            steps {
+//                bat 'docker build -t applicationchat .'
+//            }
+ //       }
         
         stage('Run Docker Compose') {
             steps {
