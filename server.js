@@ -140,11 +140,15 @@ app.post('/users', async (req, res) => {
     return res.status(403).send('Access denied');
   }
 
-  const newUser = new User(req.body);
-  await newUser.save();
-  res.send(newUser);
+  try {
+    const newUser = new User(req.body);
+    await newUser.save();
+    res.send(newUser);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('An error occurred');
+  }
 });
-
 // Modifier un utilisateur
 app.put('/users/:id', async (req, res) => {
   if (req.session.role !== 'admin') {

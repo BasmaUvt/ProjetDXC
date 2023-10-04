@@ -20,11 +20,11 @@ pipeline {
             }
         }
 
-        stage('Run') {
-            steps {
-                bat 'start /b cmd /c "node server.js"'
-            }
-        }
+//        stage('Run') {
+//            steps {
+//                bat 'start /b cmd /c "node server.js"'
+//            }
+//        }
 
         stage('Docker Build') {
             steps {
@@ -32,9 +32,9 @@ pipeline {
             }
         }
         
-        stage('Docker Run Locally') {
+        stage('Run Docker Compose') {
             steps {
-                bat 'docker run -p 3000:3000 applicationchat'
+                bat 'docker-compose up -d'
             }
         }
     }
