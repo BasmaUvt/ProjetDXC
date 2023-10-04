@@ -1,12 +1,10 @@
 version: '3'
 services:
   app:
-    user: root
-    image: node:14
+    build: .
+    container_name: myapp
     volumes:
       - ./:/usr/src/app
-    working_dir: /usr/src/app
-    command: bash -c "npm install && npx nodemon server.js"
     ports:
       - "3000:3000"
     depends_on:

@@ -8,53 +8,34 @@ pipeline {
             }
         }
 
-        stage('Install') {
-            steps {
-                bat 'npm install'
-            }
-        }
-
-
-//        stage('Run') {
-//            steps {
-//                bat 'start /b cmd /c "node server.js"'
-//            }
-//        }
-
-//        stage('Docker Build') {
-//            steps {
-//                bat 'docker build -t applicationchat .'
-//            }
- //       }
-        
         stage('Run Docker Compose') {
             steps {
-                bat 'docker-compose up -d'
+                bat 'docker-compose up --build -d'
             }
         }
-             stage('Test') {
+
+        stage('Test') {
             steps {
-                bat 'npm test'
+                bat 'docker exec myapp npm test'
             }
         }
     }
-       
 
-post {
-    failure {
-        mail (
-            subject: "Échec du job '${env.JOB_NAME}'",
-            body: "L'URL du job est : ${env.BUILD_URL}",
-            to: 'besma.rakrouki@gmail.com'
-        )
-    }
+    post {
+        failure {
+            mail (
+                subject: "Échec du job '${env.JOB_NAME}'",
+                body: "L'URL du job est : ${env.BUILD_URL}",
+                to: 'besma.rakrouki@gmail.com'
+            )
+        }
 
-    success {
-        mail (
-            subject: "Le job '${env.JOB_NAME}' a réussi",
-            body: "L'URL du job est : ${env.BUILD_URL}",
-            to: 'besma.rakrouki@gmail.com'
-        )
+        success {
+            mail (
+                subject: "Le job '${env.JOB_NAME}' a réussi",
+                body: "L'URL du job est : ${env.BUILD_URL}",
+                to: 'besma.rakrouki@gmail.com'
+            )
+        }
     }
-}
 }
