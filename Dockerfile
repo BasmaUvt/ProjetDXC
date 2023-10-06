@@ -19,6 +19,26 @@ RUN npm ci
 # Reinstall Cypress
 RUN npm install cypress@12.17.4
 
+# Switch back to root to install additional dependencies
+USER root
+
+# Install xvfb and other dependencies for Cypress
+RUN apt-get update && apt-get install -y \
+    xvfb \
+    libgtk2.0-0 \
+    libgtk-3-0 \
+    libnotify-dev \
+    libgconf-2-4 \
+    libnss3 \
+    libxss1 \
+    libasound2 \
+    libxtst6 \
+    xauth \
+    libgbm-dev
+
+# Switch back to 'node' user
+USER node
+
 # Copy the rest of your app's source code
 COPY --chown=node:node . .
 
