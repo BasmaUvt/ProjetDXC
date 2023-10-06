@@ -1,5 +1,5 @@
 # Start from the official Cypress base image
-FROM cypress/base:14
+FROM cypress/base:16.20.1
 
 # Set the working directory
 WORKDIR /usr/src/app
