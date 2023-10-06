@@ -14,9 +14,9 @@ USER node
 COPY --chown=node:node package*.json ./
 
 # Install dependencies and install Cypress
-
-RUN npm install -g cypress@12.17.4
 RUN npm ci
+RUN npm install cypress@12.17.4
+
 # Copy the rest of your app's source code
 COPY --chown=node:node . .
 
