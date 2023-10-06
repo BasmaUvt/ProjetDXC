@@ -13,11 +13,9 @@ USER node
 # Copy package.json and package-lock.json
 COPY --chown=node:node package*.json ./
 
-# Disable Cypress install verification
-ENV CYPRESS_INSTALL_BINARY=0
-
-# Install dependencies and install Cypress
+# Install dependencies and install Cypress globally
 RUN npm ci
+RUN npm install -g cypress@12.17.4
 
 # Copy the rest of your app's source code
 COPY --chown=node:node . .
