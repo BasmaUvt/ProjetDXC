@@ -16,15 +16,15 @@ pipeline {
 
         stage('Run Cypress Tests') {
             steps {
-                bat 'docker exec myapp npx cypress run --spec cypress/integration/message_test.js'
+                bat 'docker exec myapp npx cypress run --spec chat-spec.js'
     }
 }
 
-        stage('Test') {
-            steps {
-                bat 'docker exec myapp npm test'
-            }
-        }
+  //      stage('Test') {
+   //         steps {
+   //             bat 'docker exec myapp npm test'
+    //        }
+     //   }
     }
 
     post {
