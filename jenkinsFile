@@ -1,6 +1,5 @@
 pipeline {
     agent any
-
     stages {
         stage('Checkout') {
             steps {
@@ -14,20 +13,32 @@ pipeline {
             }
         }
 
+        stage('Install Dependencies') { 
+            steps {
+                bat 'docker exec myapp npm ci'
+            }
+        }
+        //stage('Lint') { 
+         //   steps {
+          //      bat 'docker exec myapp npm run lint'
+          //  }
+        }
+        stage('Build') { 
+            steps {
+                bat 'docker exec myapp npm run build'
+            }
+        }
         stage('Run Cypress Tests') {
             steps {
                 bat 'docker exec myapp ./node_modules/.bin/cypress run --spec chat-spec.js'
-                
+            }
+        }
+        stage('Deploy') { 
+            steps {
+                bat 'docker exec myapp npm run deploy'
+            }
+        }
     }
-}
-
-  //      stage('Test') {
-   //         steps {
-   //             bat 'docker exec myapp npm test'
-    //        }
-     //   }
-    }
-
     post {
         failure {
             mail (
@@ -36,7 +47,6 @@ pipeline {
                 to: 'besma.rakrouki@gmail.com'
             )
         }
-
         success {
             mail (
                 subject: "Le job '${env.JOB_NAME}' a réussi",
