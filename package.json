@@ -344,10 +344,10 @@
   },
  
   "scripts": {
-    "start": "npx nodemon server.js",
-    "test": "cypress run",
-    "start:test": "npm run start && npm run test"
-  },
+    "start": "node server.js",
+    "start:ci": "start-server-and-test start http://localhost:3000 test:cypress",
+    "test:cypress": "cypress run"
+},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/BasmaUvt/ProjetDXC.git"

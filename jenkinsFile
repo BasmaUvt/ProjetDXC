@@ -14,15 +14,10 @@ pipeline {
             }
         }
 
-        stage('Start Server') {
+        stage('Start Server and Run Tests') {
             steps {
-                bat 'npm start'
-            }
-        }
-
-        stage('Run Cypress Tests') {
-            steps {
-                bat 'npm test'
+                sh 'npm install --save-dev start-server-and-test'
+                sh 'npm run start:ci'
             }
         }
 
