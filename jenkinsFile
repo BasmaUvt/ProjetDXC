@@ -3,35 +3,31 @@ pipeline {
 
     parameters {
         choice(name: 'TestType', choices: ['smoke', 'e2e'], description: 'Select Type Of Test')
-       // choice(name: 'Version', choices: ['1.5.11', '1.7.6.5', '1.7.6.6', '1.7.7'], description: 'Select Application Version')
-       // string(name: 'baseUrl', defaultValue: 'https://172.168.9.139/login', description: 'Validate Application URL')
         string(name: 'wait', defaultValue: '5000', description: 'Enter Additional Wait')
     }
 
     stages {
         stage('Clone the repo') {
             steps {
-                git branch: 'master', url: 'https://github.com/BasmaUvt/ProjetDXC.git', 
+                git branch: 'master', url: 'https://github.com/BasmaUvt/ProjetDXC.git'
             }
         }
 
         stage('Build Docker image') {
             steps {
-                sh 'docker-compose build'
+                bat 'docker-compose build'
             }
         }
 
         stage('Run the Cypress scenario tests') {
             steps {
                 bat '''
-               
-                export wait=${params.wait}
-                export testtype=${params.TestType}
-                
+                set wait=%params.wait%
+                set testtype=%params.TestType%
                 docker-compose up -d
                 docker-compose exec app npm install
                 docker-compose exec app ./node_modules/.bin/cypress install --force
-                docker-compose exec app ./node_modules/.bin/cypress run --spec 'cypress/integration/**/*.spec.js'  --env wait="$wait",testtype="$testtype" --reporter mochawesome --reporter-options reportDir="cypress/results",overwrite=false,html=false,json=true --headless --browser chrome
+                docker-compose exec app ./node_modules/.bin/cypress run --spec "cypress/integration/**/*.spec.js" --env wait="%wait%",testtype="%testtype%" --reporter mochawesome --reporter-options reportDir="cypress/results",overwrite=false,html=false,json=true --headless --browser chrome
                 '''
             }
         }
@@ -45,8 +41,7 @@ pipeline {
             bat 'docker-compose down'
             cleanWs()
         }
-    }
-        post {
+
         failure {
             mail (
                 subject: "Échec du job '${env.JOB_NAME}'",
@@ -54,6 +49,7 @@ pipeline {
                 to: 'besma.rakrouki@gmail.com'
             )
         }
+
         success {
             mail (
                 subject: "Le job '${env.JOB_NAME}' a réussi",
@@ -62,3 +58,4 @@ pipeline {
             )
         }
     }
+}
