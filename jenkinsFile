@@ -16,8 +16,8 @@ pipeline {
 
         stage('Start Server and Run Tests') {
             steps {
-                sh 'npm install --save-dev start-server-and-test'
-                sh 'npm run start:ci'
+                bat 'npm install --save-dev start-server-and-test'
+                bat 'npm run start:ci'
             }
         }
 
