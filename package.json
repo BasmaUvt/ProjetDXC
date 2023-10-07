@@ -344,7 +344,7 @@
   },
  
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "npx nodemon server.js",
     "test": "cypress run",
     "start:test": "npm run start && npm run test"
   },
