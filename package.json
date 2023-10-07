@@ -343,7 +343,7 @@
     "cypress": "^12.17.4"
   },
   "scripts": {
-    "test": "cypress run"
+    "test": "cypress run --headless"
   },
   "repository": {
     "type": "git",

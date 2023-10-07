@@ -3,61 +3,37 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/BasmaUvt/ProjetDXC.git', branch: 'master'
+                git url: 'https://github.com/yourrepository.git', branch: 'master'
             }
         }
 
-        stage('Run Docker Compose') {
+        stage('Build and Start Services') {
             steps {
                 bat 'docker-compose up --build -d'
             }
         }
 
-        stage('Change Permissions') { 
+        stage('Run Tests') { 
             steps {
-                bat 'docker exec -u root myapp chmod -R 777 /usr/src/app/node_modules'
+                bat 'docker-compose exec myapp npm test'
             }
         }
 
-        stage('Install Dependencies') { 
-            steps {
-                bat 'docker exec -u root myapp npm ci'
-            }
-        }
-        //stage('Lint') { 
-         //   steps {
-          //      bat 'docker exec -u root myapp npm run lint'
-          //  }
-      //  }
-        stage('Build') { 
-            steps {
-                bat 'docker exec -u root myapp npm run build'
-            }
-        }
-        stage('Run Cypress Tests') {
-            steps {
-                bat 'docker exec -u root myapp ./node_modules/.bin/cypress run --spec chat-spec.js'
-            }
-        }
-        stage('Deploy') { 
-            steps {
-                bat 'docker exec -u root myapp npm run deploy'
-            }
-        }
+        // Other stages for deployment, etc.
     }
     post {
         failure {
             mail (
                 subject: "Échec du job '${env.JOB_NAME}'",
                 body: "L'URL du job est : ${env.BUILD_URL}",
-                to: 'besma.rakrouki@gmail.com'
+                to: 'your-email@example.com'
             )
         }
         success {
             mail (
                 subject: "Le job '${env.JOB_NAME}' a réussi",
                 body: "L'URL du job est : ${env.BUILD_URL}",
-                to: 'besma.rakrouki@gmail.com'
+                to: 'your-email@example.com'
             )
         }
     }
