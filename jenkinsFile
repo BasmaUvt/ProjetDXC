@@ -1,61 +1,41 @@
 pipeline {
     agent any
 
-    parameters {
-        choice(name: 'TestType', choices: ['smoke', 'e2e'], description: 'Select Type Of Test')
-        string(name: 'wait', defaultValue: '5000', description: 'Enter Additional Wait')
-    }
-
     stages {
-        stage('Clone the repo') {
+        stage('Checkout') {
             steps {
-                git branch: 'master', url: 'https://github.com/BasmaUvt/ProjetDXC.git'
+                git 'https://github.com/BasmaUvt/ProjetDXC'
             }
         }
 
-        stage('Build Docker image') {
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'
+            }
+        }
+
+        stage('Start Server') {
+            steps {
+                bat 'npm start'
+            }
+        }
+
+        stage('Run Cypress Tests') {
+            steps {
+                bat 'npm test'
+            }
+        }
+
+stage('Build Docker Image') {
             steps {
                 bat 'docker-compose build'
             }
         }
 
-        stage('Run the Cypress scenario tests') {
+        stage('Deploy to Docker') {
             steps {
-                bat '''
-                set wait=%params.wait%
-                set testtype=%params.TestType%
-                docker-compose up -d
-                docker-compose exec app npm install
-                docker-compose exec app ./node_modules/.bin/cypress install --force
-                docker-compose exec app ./node_modules/.bin/cypress run --spec "cypress/integration/**/*.spec.js" --env wait="%wait%",testtype="%testtype%" --reporter mochawesome --reporter-options reportDir="cypress/results",overwrite=false,html=false,json=true --headless --browser chrome
-                '''
+                bat 'docker-compose up -d'
             }
-        }
-    }
-
-    post {
-        always {
-            bat 'npx mochawesome-merge "Cypress/cypress/results/*.json" > Cypress/mochawesome.json'
-            bat 'npx mochawesome-report-generator Cypress/mochawesome.json'
-            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'mochawesome-report', reportFiles: 'mochawesome.html', reportName: 'HTML Report', reportTitles: ''])
-            bat 'docker-compose down'
-            cleanWs()
-        }
-
-        failure {
-            mail (
-                subject: "Échec du job '${env.JOB_NAME}'",
-                body: "L'URL du job est : ${env.BUILD_URL}",
-                to: 'besma.rakrouki@gmail.com'
-            )
-        }
-
-        success {
-            mail (
-                subject: "Le job '${env.JOB_NAME}' a réussi",
-                body: "L'URL du job est : ${env.BUILD_URL}",
-                to: 'besma.rakrouki@gmail.com'
-            )
         }
     }
 }
