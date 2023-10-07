@@ -342,8 +342,11 @@
   "devDependencies": {
     "cypress": "^12.17.4"
   },
+ 
   "scripts": {
-    "test": "cypress run --headless"
+    "start": "nodemon server.js",
+    "test": "cypress run",
+    "start:test": "npm run start && npm run test"
   },
   "repository": {
     "type": "git",

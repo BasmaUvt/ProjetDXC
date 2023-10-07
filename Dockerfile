@@ -12,6 +12,5 @@ RUN npm ci
 # Copiez le reste des fichiers de l'application
 COPY . .
 
-# Exécutez les tests
-CMD ["npm", "test", "npx", "nodemon", "server.js", "cypress"]
-
+# Exécutez le serveur et les tests
+CMD ["npm", "run", "start:test"]
