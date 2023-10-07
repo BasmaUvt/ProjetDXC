@@ -1,36 +1,52 @@
 pipeline {
     agent any
+
+    parameters {
+        choice(name: 'TestType', choices: ['smoke', 'e2e'], description: 'Select Type Of Test')
+       // choice(name: 'Version', choices: ['1.5.11', '1.7.6.5', '1.7.6.6', '1.7.7'], description: 'Select Application Version')
+       // string(name: 'baseUrl', defaultValue: 'https://172.168.9.139/login', description: 'Validate Application URL')
+        string(name: 'wait', defaultValue: '5000', description: 'Enter Additional Wait')
+    }
+
     stages {
-        stage('Checkout') {
+        stage('Clone the repo') {
             steps {
-                git url: 'https://github.com/BasmaUvt/ProjetDXC.git', branch: 'master'
+                git branch: 'master', url: 'https://github.com/BasmaUvt/ProjetDXC.git', branch: 'master'
             }
         }
 
-        stage('Build') {
+        stage('Build Docker image') {
             steps {
-                bat 'docker-compose build'
+                sh 'docker-compose build'
             }
         }
 
-
-        stage('Test') { 
+        stage('Run the Cypress scenario tests') {
             steps {
-                bat 'docker-compose up -d'
-                bat 'docker-compose exec myapp npm test'
-                bat 'docker-compose down'
-            }
-        }
-
-       
-        stage('Deploy') {
-            steps {
-                bat 'docker-compose up -d'
+                bat '''
+               
+                export wait=${params.wait}
+                export testtype=${params.TestType}
+                
+                docker-compose up -d
+                docker-compose exec app npm install
+                docker-compose exec app ./node_modules/.bin/cypress install --force
+                docker-compose exec app ./node_modules/.bin/cypress run --spec 'cypress/integration/**/*.spec.js'  --env wait="$wait",testtype="$testtype" --reporter mochawesome --reporter-options reportDir="cypress/results",overwrite=false,html=false,json=true --headless --browser chrome
+                '''
             }
         }
     }
-    
+
     post {
+        always {
+            bat 'npx mochawesome-merge "Cypress/cypress/results/*.json" > Cypress/mochawesome.json'
+            bat 'npx mochawesome-report-generator Cypress/mochawesome.json'
+            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'mochawesome-report', reportFiles: 'mochawesome.html', reportName: 'HTML Report', reportTitles: ''])
+            bat 'docker-compose down'
+            cleanWs()
+        }
+    }
+        post {
         failure {
             mail (
                 subject: "Échec du job '${env.JOB_NAME}'",
