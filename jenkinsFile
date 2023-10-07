@@ -17,7 +17,7 @@ pipeline {
         stage('Test') { 
             steps {
                 bat 'docker-compose up -d'
-                bat 'docker-compose exec myapp npm test'
+                bat 'docker-compose exec app npm test'
                 bat 'docker-compose down'
             }
         }
