@@ -1,5 +1,5 @@
 # Utilisez une image Node.js avec toutes les dépendances nécessaires pour Cypress
-FROM cypress/node14
+FROM node14
 
 WORKDIR /app
 
