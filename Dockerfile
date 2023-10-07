@@ -1,5 +1,5 @@
 # Utilisez une image Node.js avec toutes les dépendances nécessaires pour Cypress
-FROM node14
+FROM cypress/browsers:node12.18.3-chrome87-ff82
 
 WORKDIR /app
 
@@ -12,5 +12,6 @@ RUN npm ci
 # Copiez le reste des fichiers de l'application
 COPY . .
 
-# Exécutez le serveur et les tests
-CMD ["npm", "run", "start:test"]
+# Exécutez les tests
+CMD ["npm", "test", "npx", "nodemon", "server.js", "cypress"]
+
