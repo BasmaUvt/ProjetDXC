@@ -11,7 +11,7 @@ pipeline {
     stages {
         stage('Clone the repo') {
             steps {
-                git branch: 'master', url: 'https://github.com/BasmaUvt/ProjetDXC.git', branch: 'master'
+                git branch: 'master', url: 'https://github.com/BasmaUvt/ProjetDXC.git', 
             }
         }
 
