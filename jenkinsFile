@@ -10,7 +10,7 @@ pipeline {
         stage('Build') {
             steps {
                 bat 'docker-compose build'
-                bat 'winpty docker-compose exec myapp npm install cypress --save-dev'
+                bat 'docker-compose exec myapp npm install cypress --save-dev'
             }
         }
 
