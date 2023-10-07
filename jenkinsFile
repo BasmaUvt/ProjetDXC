@@ -22,7 +22,7 @@ pipeline {
          //   steps {
           //      bat 'docker exec myapp npm run lint'
           //  }
-        }
+      //  }
         stage('Build') { 
             steps {
                 bat 'docker exec myapp npm run build'
