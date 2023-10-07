@@ -345,7 +345,8 @@
  
   "scripts": {
     "start": "node server.js",
-    "start:ci": "start-server-and-test start http://localhost:3000 test:cypress",
+    "start:ci": "node server.js",
+    "test:ci": "start-server-and-test http://localhost:3000 test:cypress",
     "test:cypress": "cypress run"
 },
   "repository": {
