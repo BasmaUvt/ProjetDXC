@@ -21,7 +21,16 @@ pipeline {
                 bat 'npm run start:ci'
             }
         }
-
+stage('SonarQube analysis') {
+    steps {
+        script {
+            def scannerHome = tool 'sonar-project.properties';
+            withSonarQubeEnv('sonar-project.properties') {
+                bat "${scannerHome}/bin/sonar-scanner"
+            }
+        }
+    }
+}
         stage('Build Docker Image') {
             steps {
                 bat 'docker-compose build'
