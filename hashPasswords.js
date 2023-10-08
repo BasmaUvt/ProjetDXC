@@ -34,18 +34,24 @@ role: {
 const User = mongoose.model("User", UserSchema, "users");
 
 async function hashPasswords() {
-  // Récupère tous les utilisateurs
-  const users = await User.find({});
+  try {
+    // Récupère tous les utilisateurs
+    const users = await User.find({});
 
-  for (const user of users) {
-    // Si le mot de passe n'a pas encore été haché
-    if (!user.password.startsWith('$2a$')) {
-      const salt = bcrypt.genSaltSync(10);
-      const hashedPassword = bcrypt.hashSync(user.password, salt);
-      user.password = hashedPassword;
-      await user.save();
+    for (const user of users) {
+      // Si le mot de passe n'a pas encore été haché
+      if (!user.password.startsWith('$2a$')) {
+        const salt = bcrypt.genSaltSync(10);
+        const hashedPassword = bcrypt.hashSync(user.password, salt);
+        user.password = hashedPassword;
+        await user.save();
+      }
     }
+    console.log('Password hashing complete');
+  } catch (error) {
+    console.error('Error hashing passwords:', error);
+  } finally {
+    // Ferme la connexion à la base de données
+    mongoose.connection.close();
   }
-
-  console.log('Password hashing complete');
 }
