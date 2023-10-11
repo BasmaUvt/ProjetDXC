@@ -1,3 +1,6 @@
+environment {
+    SONAR_TOKEN = credentials('sonar-token')
+}
 pipeline {
     agent any
 
@@ -21,16 +24,34 @@ pipeline {
                 bat 'npm run start:ci'
             }
         }
+stage('Start SonarQube') {
+    steps {
+        script {
+            // Démarrer le conteneur SonarQube
+            docker.image('sonarqube').run('-d --name sonarqube -p 9001:9000')
+        }
+    }
+}        
 stage('SonarQube analysis') {
     steps {
         script {
-            def scannerHome = tool 'SonarQube Scanner'; // Change here
-            withSonarQubeEnv('My SonarQube Server') {  // Change here
-                bat "${scannerHome}/bin/sonar-scanner"
+            def scannerHome = tool 'SonarQube Scanner';
+            withSonarQubeEnv('My SonarQube Server') {
+                // Récupérer le fichier sonar-project.properties depuis le chemin spécifié
+                def propertiesFilePath = "C:/Users/brakrouki2/OneDrive - DXC Production/Desktop/dossierdescapturpfe/ProjetDXC/sonar-project.properties"
+                
+                // Vérifier si le fichier existe
+                if (fileExists(propertiesFilePath)) {
+                    // Lancer l'analyse en utilisant le scanner SonarQube avec le fichier de configuration et le token d'accès
+                    bat "${scannerHome}/bin/sonar-scanner -Dproject.settings=${propertiesFilePath} -Dsonar.login=${env.SONAR_TOKEN}"
+                } else {
+                    error "Le fichier sonar-project.properties n'a pas été trouvé à l'emplacement spécifié."
+                }
             }
         }
     }
 }
+
         stage('Build Docker Image') {
             steps {
                 bat 'docker-compose build'
