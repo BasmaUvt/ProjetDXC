@@ -28,7 +28,7 @@ stage('Start SonarQube') {
     steps {
         script {
             // Démarrer le conteneur SonarQube
-            docker.image('sonarqube').run('-d --name sonarqube -p 9001:9000')
+            bat 'docker run -d --name sonarqube -p 9001:9000 sonarqube'
         }
     }
 }        
