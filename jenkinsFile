@@ -31,7 +31,7 @@ pipeline {
                     // Démarrer le conteneur SonarQube
                     bat 'docker start sonarqube || docker run -d --name sonarqube -p 9001:9000 sonarqube'
                     // Attendre que SonarQube soit prêt à être utilisé
-                    bat 'powershell -Command "& {while ($true) {if (Test-Connection -TargetName localhost -TcpPort 9000 -Quiet -Count 1) {break} else {Start-Sleep 5}}}"'
+                    //bat 'powershell -Command "& {while ($true) {if (Test-Connection -TargetName localhost -TcpPort 9000 -Quiet -Count 1) {break} else {Start-Sleep 5}}}"'
                 }
             }
         }
