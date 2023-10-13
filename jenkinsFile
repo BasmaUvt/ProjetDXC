@@ -40,7 +40,7 @@ pipeline {
             steps {
                 script {
                     def scannerHome = tool 'SonarQube Scanner';
-                    withSonarQubeEnv('My SonarQube Server') {
+                    withSonarQubeEnv('SonarQube Scanner') {
                         // Récupérer le fichier sonar-project.properties depuis le chemin spécifié
                         def propertiesFilePath = "C:/Users/brakrouki2/OneDrive - DXC Production/Desktop/dossierdescapturpfe/ProjetDXC/sonar-project.properties"
                         
