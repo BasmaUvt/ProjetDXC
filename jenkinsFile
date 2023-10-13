@@ -13,7 +13,7 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-            bat 'npm install'
+                bat 'npm install'
             }
         }
 
@@ -24,33 +24,37 @@ pipeline {
                 bat 'npm run start:ci'
             }
         }
-stage('Start SonarQube') {
-    steps {
-        script {
-            // Démarrer le conteneur SonarQube
-            bat 'docker run -d --name sonarqube -p 9001:9000 sonarqube'
-        }
-    }
-}        
-stage('SonarQube analysis') {
-    steps {
-        script {
-            def scannerHome = tool 'SonarQube Scanner';
-            withSonarQubeEnv('My SonarQube Server') {
-                // Récupérer le fichier sonar-project.properties depuis le chemin spécifié
-                def propertiesFilePath = "C:/Users/brakrouki2/OneDrive - DXC Production/Desktop/dossierdescapturpfe/ProjetDXC/sonar-project.properties"
-                
-                // Vérifier si le fichier existe
-                if (fileExists(propertiesFilePath)) {
-                    // Lancer l'analyse en utilisant le scanner SonarQube avec le fichier de configuration et le token d'accès
-                    bat "${scannerHome}/bin/sonar-scanner -Dproject.settings=${propertiesFilePath} -Dsonar.login=${env.SONAR_TOKEN}"
-                } else {
-                    error "Le fichier sonar-project.properties n'a pas été trouvé à l'emplacement spécifié."
+
+        stage('Start SonarQube') {
+            steps {
+                script {
+                    // Démarrer le conteneur SonarQube
+                    bat 'docker start sonarqube || docker run -d --name sonarqube -p 9000:9000 sonarqube'
+                    // Attendre que SonarQube soit prêt à être utilisé
+                    bat 'powershell -Command "& {while ($true) {if (Test-Connection -TargetName localhost -TcpPort 9000 -Quiet -Count 1) {break} else {Start-Sleep 5}}}"'
                 }
             }
         }
-    }
-}
+        
+        stage('SonarQube analysis') {
+            steps {
+                script {
+                    def scannerHome = tool 'SonarQube Scanner';
+                    withSonarQubeEnv('My SonarQube Server') {
+                        // Récupérer le fichier sonar-project.properties depuis le chemin spécifié
+                        def propertiesFilePath = "C:/Users/brakrouki2/OneDrive - DXC Production/Desktop/dossierdescapturpfe/ProjetDXC/sonar-project.properties"
+                        
+                        // Vérifier si le fichier existe
+                        if (fileExists(propertiesFilePath)) {
+                            // Lancer l'analyse en utilisant le scanner SonarQube avec le fichier de configuration et le token d'accès
+                            bat "${scannerHome}/bin/sonar-scanner -Dproject.settings=${propertiesFilePath} -Dsonar.login=${env.SONAR_TOKEN}"
+                        } else {
+                            error "Le fichier sonar-project.properties n'a pas été trouvé à l'emplacement spécifié."
+                        }
+                    }
+                }
+            }
+        }
 
         stage('Build Docker Image') {
             steps {

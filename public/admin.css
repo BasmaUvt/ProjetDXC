@@ -2,6 +2,16 @@ body {
     background-color: #f5f5f5;
 }
 
+.container {
+    max-width: 800px;  /* ajustez cette valeur selon vos besoins */
+    margin: auto;
+}
+
+input[type="text"], input[type="password"] {
+    width: 40%;  /* ajustez cette valeur selon vos besoins */
+    box-sizing: border-box;
+}
+
 .navbar {
     background-color: #6024A0 !important;
 }
