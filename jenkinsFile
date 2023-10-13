@@ -47,7 +47,7 @@ pipeline {
                         // Vérifier si le fichier existe
                         if (fileExists(propertiesFilePath)) {
                             // Lancer l'analyse en utilisant le scanner SonarQube avec le fichier de configuration et le token d'accès
-                            bat "${scannerHome}\sonar-scanner -Dproject.settings=${propertiesFilePath} -Dsonar.login=${env.SONAR_TOKEN}"
+                            bat "${scannerHome}/sonar-scanner -Dproject.settings=${propertiesFilePath} -Dsonar.login=${env.SONAR_TOKEN}"
                         } else {
                             error "Le fichier sonar-project.properties n'a pas été trouvé à l'emplacement spécifié."
                         }
