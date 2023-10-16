@@ -4,13 +4,18 @@ environment {
 pipeline {
     agent any
 
-    stages {
-        stage('Checkout') {
-            steps {
-                git 'https://github.com/BasmaUvt/ProjetDXC'
-            }
+    stage('Checkout') {
+        steps {
+            checkout([
+                $class: 'GitSCM', 
+                branches: [[name: '*/main']], 
+                 userRemoteConfigs: [[
+                    credentialsId: 'GitHub', 
+                    url: 'https://github.dxc.com/brakrouki2/ProjetDXC.git'
+                ]]
+            ])
         }
-
+    }
         stage('Install Dependencies') {
             steps {
                 bat 'npm install'
@@ -28,10 +33,7 @@ pipeline {
         stage('Start SonarQube') {
             steps {
                 script {
-                    // Démarrer le conteneur SonarQube
                     bat 'docker start sonarqube || docker run -d --name sonarqube -p 9001:9000 sonarqube'
-                    // Attendre que SonarQube soit prêt à être utilisé
-                    //bat 'powershell -Command "& {while ($true) {if (Test-Connection -TargetName localhost -TcpPort 9000 -Quiet -Count 1) {break} else {Start-Sleep 5}}}"'
                 }
             }
         }
@@ -39,17 +41,13 @@ pipeline {
         stage('SonarQube analysis') {
             steps {
                 script {
-                    def scannerHome = tool 'SonarQube Scanner';
-                    withSonarQubeEnv('SonarQube Scanner') {
-                        // Récupérer le fichier sonar-project.properties depuis le chemin spécifié
-                        def propertiesFilePath = "C:/Users/brakrouki2/OneDrive - DXC Production/Desktop/dossierdescapturpfe/ProjetDXC/sonar-project.properties"
-                        
-                        // Vérifier si le fichier existe
-                        if (fileExists(propertiesFilePath)) {
-                            // Lancer l'analyse en utilisant le scanner SonarQube avec le fichier de configuration et le token d'accès
-                            bat "${scannerHome}\\sonar-scanner.bat -Dproject.settings=\"${propertiesFilePath}\" -Dsonar.login=sqa_45b23bbe1a6946b20e3858de5a081958ab435170"
-                        } else {
-                            error "Le fichier sonar-project.properties n'a pas été trouvé à l'emplacement spécifié."
+    def scannerHome = tool 'SonarQube Scanner';
+             withSonarQubeEnv('SonarQube Scanner') {
+     def propertiesFilePath = "C:/Users/brakrouki2/OneDrive - DXC Production/Desktop/dossierdescapturpfe/ProjetDXC/sonar-project.properties"
+            if (fileExists(propertiesFilePath)) {
+     bat "${scannerHome}\\sonar-scanner.bat -Dproject.settings=\"${propertiesFilePath}\" -Dsonar.login=sqa_45b23bbe1a6946b20e3858de5a081958ab435170"
+             } else {
+                        error "Le fichier sonar-project.properties n'a pas été trouvé à l'emplacement spécifié."
                         }
                     }
                 }
