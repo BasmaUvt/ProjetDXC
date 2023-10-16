@@ -11,7 +11,7 @@ const server = http.createServer(app);
 const io = socketIO(server);
 const PORT = process.env.PORT || 3000;
 
-const uri = 'mongodb://172.23.32.1:27017/ma_base_de_donnees';
+const uri = 'mongodb://localhost:27017/ma_base_de_donnees';
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true});
 
 const db = mongoose.connection;
