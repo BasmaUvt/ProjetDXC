@@ -1,14 +1,14 @@
 pipeline {
     agent any
     
-    environment {
-        SONAR_TOKEN = credentials('sonar-token')
-    }
+   // environment {
+   //     SONAR_TOKEN = credentials('sonar-token')
+   // }
 
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'master', url: 'https://github.com/BasmaUvt/ProjetDXC'
+                git branch: 'main', url: 'https://github.com/BasmaUvt/ProjetDXC'
             }
         }
 
