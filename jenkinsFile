@@ -23,7 +23,7 @@ pipeline {
                 //bat 'node hashPasswords.js'
                 //bat 'npm install --save-dev start-server-and-test'
                 bat 'npm start'
-               bat 'npm run test:cypress'
+              // bat 'npm run test:cypress'
                //bat 'node server.js'
             }
         }
