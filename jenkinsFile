@@ -21,7 +21,7 @@ pipeline {
  stage('Start Server and Run Tests') {
             steps {
                 bat 'node hashPasswords.js'
-               // bat 'npm install --save-dev start-server-and-test'
+                bat 'npm install --save-dev start-server-and-test'
                 bat 'npm run start:ci'
             }
         }
