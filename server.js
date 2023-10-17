@@ -12,12 +12,16 @@ const io = socketIO(server);
 const PORT = process.env.PORT || 3000;
 
 const uri = 'mongodb://localhost:27017/ma_base_de_donnees';
-mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'Erreur de connexion à MongoDB:'));
 db.once('open', () => {
-console.log('Connecté à MongoDB');
+  console.log('Connecté à MongoDB');
+  
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
 });
 
 //const express = require('express');
