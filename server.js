@@ -9,7 +9,7 @@ const bcrypt = require('bcryptjs');
 const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 const uri = 'mongodb://localhost:27017/ma_base_de_donnees';
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
