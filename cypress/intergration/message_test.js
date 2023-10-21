@@ -1,18 +1,18 @@
 describe('Test d\'envoi de message', () => {
     beforeEach(() => {
-      cy.visit('http://localhost:3000/login.html'); // Visitez la page de connexion
+      cy.visit('http://localhost:3000/login.html');
   
       // Simulez une connexion
-      cy.get('#login-input').type('Basma'); // Remplacez par l'ID réel du champ de saisie du nom d'utilisateur
-      cy.get('#password-input').type('333'); // Remplacez par l'ID réel du champ de saisie du mot de passe
+      cy.get('#login-input').type('Basma');
+      cy.get('#password-input').type('333');
       cy.get('button[type="submit"].btn-primary').click();
     });
   
     it('devrait envoyer un message', () => {
-      cy.visit('http://localhost:3000'); // Visitez votre application après connexion
+      cy.visit('http://localhost:3000');
   
       // Sélectionnez un destinataire
-      cy.get('#recipient').select('mehdi.khamlia2@dxc.com'); // Remplacez par un email de destinataire valide
+      cy.get('#recipient').select('mehdi.khamlia2@dxc.com');
   
       // Tapez et envoyez un message
       cy.get('#message').type('Mon message');

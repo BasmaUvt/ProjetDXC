@@ -10,8 +10,8 @@
 <body>
   <nav class="navbar navbar-light" style="background-color: #6024A0;">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">
-        <img src="logo.png" alt="Logo" width="30" height="24" >
+      <a class="navbar-brand" href="#" style="color: white;">
+        <img src="logo.png" alt="Logo" width="46" height="40" >
         DXC Technology
       </a>
       <button id="logoutButton" class="btn btn-danger" onclick="handleLogout()" style="color:#d9d9d9;">Logout</button>
@@ -21,7 +21,7 @@
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-md-6">
-        <h1 class="text-center my-4">Chat avec DXC</h1>
+        <h1 class="text-center my-4" style="color: #6024A0;">SnapTalk</h1>
         <h2 id="welcome" class="text-center"></h2>
 
         <div class="form-container">
@@ -29,7 +29,6 @@
               <label for="recipient" class="form-label">Send to</label>
               <select id="recipient" class="form-select mb-3">
                 <option value="" selected disabled hidden>Choose an email address</option>
-                <!-- Les options seront ajoutées ici par Javascript -->
               </select>
 
               <label for="message" class="form-label">Message</label>
@@ -52,7 +51,6 @@
     let username = "";
     let userId = "";
 
-    // Récupération du nom de l'utilisateur connecté et de son ID
     fetch("/username")
       .then((response) => {
         if (response.ok) {
@@ -65,7 +63,7 @@
         username = data.username;
         userId = data.userId;
         document.getElementById("welcome").textContent = `Welcome, ${username}`;
-        populateRecipientSelect(); // Ajout de cette ligne
+        populateRecipientSelect(); 
       })
       .catch((error) => {
         console.error("Erreur:", error);
@@ -115,11 +113,8 @@
     socket.on("chat message", (msg) => {
       const messageElement = document.createElement("div");
       messageElement.classList.add("message");
-
-      const date = new Date(msg.date); // transformer la chaîne ISO en date
-
+      const date = new Date(msg.date); 
       const options = { year:'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
-
       if (msg.user === username) {
         messageElement.innerHTML = `
           <div class="sent">
@@ -141,13 +136,9 @@
     });
 
     function handleLogout() {
-    // Supprimer les informations d'utilisateur du localStorage (si elles y sont stockées)
     localStorage.removeItem('user');
-
-    // Déconnecter l'utilisateur sur le serveur (si nécessaire)
     fetch('/logout', { method: 'POST' })
     .then(() => {
-        // Rediriger l'utilisateur vers la page de connexion
         window.location.href = '/login.html';
     })
     .catch((error) => {

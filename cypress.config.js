@@ -6,6 +6,5 @@ module.exports = defineConfig({
     specPattern: '**/*chat-spec.js',
     //specPattern: '**/*index-spec.js',
     //specPattern: '**/*message_test.js',
-    // other e2e options here
   },
 })

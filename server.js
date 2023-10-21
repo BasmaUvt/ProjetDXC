@@ -11,20 +11,15 @@ const server = http.createServer(app);
 const io = socketIO(server);
 const PORT = process.env.PORT || 3000;
 
-const uri = 'mongodb://172.26.80.1:27017/ma_base_de_donnees';
-mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+const uri = 'mongodb://192.168.224.1:27017/ma_base_de_donnees';
+mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true});
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'Erreur de connexion à MongoDB:'));
 db.once('open', () => {
-  console.log('Connecté à MongoDB');
-  
- // app.listen(PORT, () => {
-   // console.log(`Server is running on port ${PORT}`);
- // });
+console.log('Connecté à MongoDB');
 });
 
-//const express = require('express');
 const User = require('./models/user');
 const Conversation = require('./models/Conversation');
 
@@ -80,7 +75,6 @@ app.get('/', (req, res) => {
   }
 });
 
-// Route pour obtenir le nom de l'utilisateur connecté et son email
 app.get('/username', async (req, res) => {
   if (req.session && req.session.userId) {
     const user = await User.findOne({ ID: req.session.userId });
@@ -98,7 +92,6 @@ app.get('/username', async (req, res) => {
   }
 });
 
-// Route pour obtenir tous les utilisateurs
 app.get('/all-users', async (req, res) => {
   const users = await User.find({});
   res.json(users.map(user => ({ email: user.email, userId: user.ID })));
@@ -117,7 +110,6 @@ req.session.destroy();
 res.redirect('/login');
 });
 
-// Route pour obtenir tous les utilisateurs
 app.get('/users', async (req, res) => {
   if (req.session.role !== 'admin') {
     return res.status(403).send('Access denied');
@@ -127,7 +119,6 @@ app.get('/users', async (req, res) => {
   res.json(users);
 });
 
-// Route pour obtenir toutes les conversations
 app.get('/conversations', async (req, res) => {
   if (req.session.role !== 'admin') {
     return res.status(403).send('Access denied');
@@ -138,13 +129,12 @@ app.get('/conversations', async (req, res) => {
 });
 
 app.use(express.static(path.join(__dirname, 'public')));
-// Ajouter un utilisateur
+
 app.post('/users', async (req, res) => {
   if (req.session.role !== 'admin') {
     return res.status(403).send('Access denied');
   }
-
-  try {
+ try {
     const newUser = new User(req.body);
     await newUser.save();
     res.send(newUser);
@@ -153,12 +143,11 @@ app.post('/users', async (req, res) => {
     res.status(500).send('An error occurred');
   }
 });
-// Modifier un utilisateur
+
 app.put('/users/:id', async (req, res) => {
   if (req.session.role !== 'admin') {
     return res.status(403).send('Access denied');
   }
-
   try {
     const user = await User.findOneAndUpdate({ ID: req.params.id }, req.body, { new: true });
     res.send(user);
@@ -168,15 +157,14 @@ app.put('/users/:id', async (req, res) => {
   }
 });
 
-// Supprimer un utilisateur
 app.delete('/users/:id', async (req, res) => {
   if (req.session.role !== 'admin') {
     return res.status(403).send('Access denied');
   }
-
   const user = await User.findOneAndRemove(req.params.id);
   res.send(user);
 });
+
 io.on('connection', (socket) => {
   console.log('User connected');
   socket.on('chat message', async (msg) => {

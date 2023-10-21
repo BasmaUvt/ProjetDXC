@@ -4,6 +4,7 @@
   "description": "Implimentation d'une extension de messagerie instantanée dans une pipeline CI/CD",
   "main": "server.js",
   "dependencies": {
+    "@okta/oidc-middleware": "^5.1.0",
     "abbrev": "^1.1.1",
     "accepts": "^1.3.8",
     "agent-base": "^6.0.2",
@@ -342,7 +343,6 @@
   "devDependencies": {
     "cypress": "^12.17.4"
   },
- 
   "scripts": {
     "start": "node server.js",
     "start:ci": "start-server-and-test start http://localhost:3000 test:cypress",

@@ -8,7 +8,7 @@ const db = mongoose.connection;
 db.on("error", console.error.bind(console, "Erreur de connexion à MongoDB:"));
 db.once("open", () => {
   console.log("Connecté à MongoDB");
-  hashPasswords();  // Appelez la fonction hashPasswords une fois que la connexion est établie
+  hashPasswords();
 });
 
 const UserSchema = new mongoose.Schema({
@@ -27,19 +27,17 @@ password: {
 },
 role: {
     type: String,
-    enum: ['user', 'admin'],  // le champ "role" peut être soit 'user' soit 'admin'
-    default: 'user'   // par défaut, le champ "role" est 'user'
+    enum: ['user', 'admin'],
+    default: 'user'
 }
 });
 const User = mongoose.model("User", UserSchema, "users");
 
 async function hashPasswords() {
   try {
-    // Récupère tous les utilisateurs
     const users = await User.find({});
 
     for (const user of users) {
-      // Si le mot de passe n'a pas encore été haché
       if (!user.password.startsWith('$2a$')) {
         const salt = bcrypt.genSaltSync(10);
         const hashedPassword = bcrypt.hashSync(user.password, salt);
@@ -51,7 +49,6 @@ async function hashPasswords() {
   } catch (error) {
     console.error('Error hashing passwords:', error);
   } finally {
-    // Ferme la connexion à la base de données
     mongoose.connection.close();
   }
 }
