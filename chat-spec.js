@@ -17,16 +17,15 @@ describe('Chat Application', () => {
 
         // Vous devriez maintenant être redirigé vers index.html
 
-        // Choisissez un destinataire pour le message
         cy.get('#recipient')
-            .select('besma.rakrouki2@dxc.com');  // Remplacez 'email du destinataire' par l'email du destinataire que vous voulez sélectionner
+            .select('besma.rakrouki2@dxc.com');
 
         // Tapez le message dans le champ de saisie du message
         cy.get('#message')
             .type(messageContent);
 
         // Cliquez sur le bouton "Envoyer" pour envoyer le message
-        cy.get('#send')  // Assurez-vous que ceci est l'ID de votre bouton d'envoi
+        cy.get('#send')
             .click();
 
         // Vérifiez que le message est affiché dans la liste des messages

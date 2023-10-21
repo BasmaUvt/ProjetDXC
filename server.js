@@ -33,8 +33,6 @@ resave: false,
 saveUninitialized: true,
 })
 );
-
-
 // Route pour la page de connexion
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;

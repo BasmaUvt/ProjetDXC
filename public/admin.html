@@ -132,7 +132,7 @@
                     method: 'DELETE'
                 })
                 .done(function() {
-                    location.reload(); // recharge la page pour voir les modifications
+                    location.reload();
                 })
                 .fail(function(err) {
                     console.error(err);
@@ -140,7 +140,7 @@
             });
 
             let username = "";
-    let userId = ""; // Ajoutez une variable pour stocker l'ID de l'utilisateur
+    let userId = "";
   
     // Récupération du nom de l'utilisateur connecté et de son ID
       fetch("/username")
@@ -155,7 +155,7 @@
         username = data.username;
         userId = data.userId;
         document.getElementById("welcome").textContent = `Welcome, ${username}`;
-        populateRecipientSelect(); // Ajout de cette ligne
+        populateRecipientSelect();
       })
       .catch((error) => {
         console.error("Erreur:", error);
@@ -206,7 +206,7 @@
       const messageElement = document.createElement("div");
       messageElement.classList.add("message");
 
-      const date = new Date(msg.date); // transformer la chaîne ISO en date
+      const date = new Date(msg.date);
 
       const options = { year:'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
 
@@ -231,13 +231,9 @@
     });
 
     function handleLogout() {
-    // Supprimer les informations d'utilisateur du localStorage (si elles y sont stockées)
     localStorage.removeItem('user');
-
-    // Déconnecter l'utilisateur sur le serveur (si nécessaire)
     fetch('/logout', { method: 'POST' })
     .then(() => {
-        // Rediriger l'utilisateur vers la page de connexion
         window.location.href = '/login.html';
     })
     .catch((error) => {
