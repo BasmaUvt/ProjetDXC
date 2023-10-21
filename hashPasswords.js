@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require('bcryptjs');
 
-const uri = "mongodb://127.0.0.1:27017/ma_base_de_donnees";
+const uri = "mongodb://192.168.224.1:27017/ma_base_de_donnees";
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 const db = mongoose.connection;
