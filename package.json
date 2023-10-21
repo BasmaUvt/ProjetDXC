@@ -343,6 +343,7 @@
   "devDependencies": {
     "cypress": "^12.17.4"
   },
+ 
   "scripts": {
     "start": "node server.js",
     "start:ci": "start-server-and-test start http://localhost:3000 test:cypress",
@@ -350,7 +351,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/BasmaUvt/ProjetDXC.git"
+    "url": "git+https://github.dxc.com/brakrouki2/ProjetDXC.git"
   },
   "keywords": [
     "messagerie"
@@ -358,7 +359,7 @@
   "author": "communication",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/BasmaUvt/ProjetDXC/issues"
+    "url": "https://github.dxc.com/brakrouki2/ProjetDXC.git/issues"
   },
-  "homepage": "https://github.com/BasmaUvt/ProjetDXC#readme"
+  "homepage": "https://github.dxc.com/brakrouki2/ProjetDXC.git#readme"
 }
