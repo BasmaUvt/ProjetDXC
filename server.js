@@ -12,7 +12,7 @@ const io = socketIO(server);
 const PORT = process.env.PORT || 3000;
 
 
-mongoose.connect('mongodb://192.168.224.1:27017/ma_base_de_donnees',{useNewUrlParser:true});
+mongoose.connect('mongodb://127.0.0.1:27017/ma_base_de_donnees',{useNewUrlParser:true});
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'Erreur de connexion à MongoDB:'));

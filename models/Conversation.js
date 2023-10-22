@@ -7,7 +7,7 @@ const ConversationSchema = new mongoose.Schema({
     messages: [
       {
         sender: String,
-        recipient: String, // ajoutez ce champ
+        recipient: String,
         content: String,
         date: { type: Date, default: Date.now }
       }
