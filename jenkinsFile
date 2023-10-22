@@ -27,7 +27,7 @@ pipeline {
                // bat 'node hashPasswords.js'
                 //bat 'npm install --save-dev start-server-and-test'
                 //bat 'npm run start:ci'
-                bat 'node server.js'
+                bat 'node server2.js'
             }
         }
 
