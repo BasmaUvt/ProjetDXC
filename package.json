@@ -2,7 +2,7 @@
   "name": "projetdxc",
   "version": "1.0.0",
   "description": "Implimentation d'une extension de messagerie instantanée dans une pipeline CI/CD",
-  "main": "server2.js",
+  "main": "server.js",
   "dependencies": {
     "@okta/oidc-middleware": "^5.1.0",
     "abbrev": "^1.1.1",
@@ -345,7 +345,7 @@
   },
  
   "scripts": {
-    "start": "node server2.js",
+    "start": "node server.js",
     "start:ci": "start-server-and-test start http://localhost:3000 test:cypress",
     "test:cypress": "cypress run"
   },
